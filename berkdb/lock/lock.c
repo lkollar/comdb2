@@ -3730,6 +3730,7 @@ __lock_locker_getpriority(lt, locker, priority)
 	int *priority;
 {
 	DB_ENV *dbenv;
+	(void) dbenv;
 	DB_LOCKER *sh_locker;
 	DB_LOCKREGION *region;
 	u_int32_t indx;
@@ -3890,6 +3891,7 @@ __lock_set_timeout(dbenv, locker, timeout, op)
 	u_int32_t op;
 {
 	DB_LOCKTAB *lt;
+	(void)lt;
 	int ret;
 
 	lt = dbenv->lk_handle;
@@ -5305,14 +5307,11 @@ not_ilock:
 		/* Add the number of nonstandard locks and get their size. */
 		nfid += nlocks - i;
 
-		oldsize = size;
-
 		baseptr = NULL;
 		ptr = baseptr;
 
 		if (has_pglk_lsn) {
 			for (; i < nlocks; i++) {
-				oldsize += obj_lsn[i].size;
 				ptr =
 				    (u_int8_t *)ptr + ALIGN(obj_lsn[i].size,
 				    sizeof(u_int32_t));
@@ -5321,7 +5320,6 @@ not_ilock:
 			}
 		} else {
 			for (; i < nlocks; i++) {
-				oldsize += obj_dbt[i].size;
 				ptr =
 				    (u_int8_t *)ptr + ALIGN(obj_dbt[i].size,
 				    sizeof(u_int32_t));
@@ -5332,7 +5330,6 @@ not_ilock:
 
 		size += (unsigned char *)ptr - (unsigned char *)baseptr;
 
-		/*fprintf(stderr, "oldsize %d size %d\n", oldsize, size); */
 
 		if (gbl_new_snapisol_logging) {
 			size += sizeof(u_int32_t);	// flag to indicate new logging format
@@ -6289,13 +6286,12 @@ __lock_abort_logical_waiters(dbenv, locker, flags)
 	for (lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock); lp != NULL;
 	    lp = SH_LIST_NEXT(lp, locker_links, __db_lock)) {
 		DB_LOCKOBJ *lockobj;
-		u_int32_t ndx, part;
+		u_int32_t part;
 
 		/* Get the object associated with this lock */
 		lockobj = lp->lockobj;
 
-		/* Get the index & partition */
-		ndx = lockobj->index;
+		/* Get the partition */
 		part = lockobj->partition;
 
 		/* Lock the partition */

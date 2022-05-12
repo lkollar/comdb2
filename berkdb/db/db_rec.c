@@ -1101,6 +1101,7 @@ __db_pg_new_recover(dbenv, dbtp, lsnp, op, info)
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
+	(void) mpf;
 	__db_pg_free_args *argp;
 	int ret;
 

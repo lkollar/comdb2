@@ -1271,7 +1271,9 @@ __bam_pgcompact_undo_target(dbc, h, argp)
 	u_int8_t *unlz4dta = NULL;
 	void *dtadbtdata, *hdrdbtdata;
 	u_int32_t dtadbtsize, hdrdbtsize;
-
+	(void) dtadbtdata;
+	(void) dtadbtsize;
+	(void) hdrdbtsize;
 	ret = 0;
 	dbp = dbc->dbp;
 

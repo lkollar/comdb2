@@ -147,6 +147,8 @@ static void *free_stack_thr(void *unused)
                     mallopt(M_MMAP_THRESHOLD, stacksz);
                     pthr_mmap_threshold = stacksz;
                 }
+#else
+            (void)stacksz;
 #endif /* MONITOR_STACK && M_MMAP_THRESHOLD */
             }
             --signal_count;
@@ -261,7 +263,7 @@ int comdb2_pthread_create(pthread_t *thread, pthread_attr_t *attr,
 ** However ibm only permits mprotect on address obtained by a mmap/shmat call.
 ** Leave ibm for now till I come up with a solution.
 */
-#if (defined(_LINUX_SOURCE) || defined(_SUN_SOURCE))
+#if (defined(_LINUX_SOURCE) || defined(_SUN_SOURCE) || defined(_DARWIN_C_SOURCE))
 
     arg->stack = (void *)(stack + __page_size);
 
